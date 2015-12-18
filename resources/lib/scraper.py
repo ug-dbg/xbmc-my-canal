@@ -55,10 +55,9 @@ class Emission(object):
         matched_contents = output_json['strates'][1]['contents']
 	type_index = 0
 
-        for strate in output_json['strates']:
-            if strate['type'] == 'contentRow' or strate['type'] == 'contentGrid':
-		emission_types.append({ 'name': strate['title'].strip(), 'index': type_index})
-	    type_index = type_index+1
+        for content in matched_contents:
+		emission_types.append({ 'name': content['buttonTitle'].strip(), 'index': type_index})
+        type_index = type_index + 1
 
         #pprint.pprint(emissions)
         return emission_types;
@@ -66,20 +65,28 @@ class Emission(object):
     @classmethod
     def get_emissions_from_index(cls, type_index):
         '''Returns a list of emissions available on the website.'''
+
+        #Seek after 'A la demande'
         content = _authenticate()
         output_json = json.loads(content)
         output_json['arborescence'] = dict((arbo['displayName'], arbo) for arbo in output_json['arborescence'])
-        a_la_demande = output_json['arborescence']['A la demande']
+        a_la_demande = output_json['arborescence']['A la demande']        
         emissionsUrl = a_la_demande['onClick']['URLPage'];
 
+        #Seek after 'Emissions'		        
         content = get(emissionsUrl)
         output_json = json.loads(content)
-        matched_contents = output_json['strates'][int(type_index)]['contents']
-	
+        matched_contents = output_json['strates'][1]['contents']
+        emissionsUrl = matched_contents[int(type_index)]['onClick']['URLPage'];
+        
+        #Seek after the actual list of 'emissions'
+        content = get(emissionsUrl)
+        output_json = json.loads(content)
+        matched_contents = output_json['strates'][1]['contents']
         emissions = [{
-            'name': emission['onClick']['displayName'].strip(),
-            'url': emission['onClick']['URLPage'],
-            'icon': emission['URLImage'],
+            'name': emission['onClick']['displayName'].strip() if('displayName' in emission['onClick']) else "???",
+            'url' : emission['onClick']['URLPage'],
+            'icon': emission['URLImage'] if('URLImage' in emission) else None,
         } for emission in matched_contents]
 
         #pprint.pprint(emissions)
