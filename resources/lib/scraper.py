@@ -57,7 +57,7 @@ class Emission(object):
 
         for content in matched_contents:
 		emission_types.append({ 'name': content['buttonTitle'].strip(), 'index': type_index})
-        type_index = type_index + 1
+		type_index = type_index + 1
 
         #pprint.pprint(emissions)
         return emission_types;
