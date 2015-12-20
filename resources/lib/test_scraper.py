@@ -24,8 +24,8 @@ class EmissionIT(unittest.TestCase):
 
         # hopefully 'Le petit journal' will always be there...
         for emission in emissions:
-		if(emission["name"] == 'Le Petit Journal'):
-			return
+                if(emission["name"] == 'Le Petit Journal'):
+                        return
         self.assertFail("Le petit journal is not available!")
 
 class VideoIT(unittest.TestCase):

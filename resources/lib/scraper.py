@@ -53,11 +53,11 @@ class Emission(object):
         content = get(emissionsUrl)
         output_json = json.loads(content)
         matched_contents = output_json['strates'][1]['contents']
-	type_index = 0
+        type_index = 0
 
         for content in matched_contents:
-		emission_types.append({ 'name': content['buttonTitle'].strip(), 'index': type_index})
-		type_index = type_index + 1
+                emission_types.append({ 'name': content['buttonTitle'].strip(), 'index': type_index})
+                type_index = type_index + 1
 
         #pprint.pprint(emissions)
         return emission_types;
@@ -116,17 +116,19 @@ class Video(object):
     @staticmethod
     def fill_videos_from_content(content, videos):
 
-	if content['type'] != 'landing' and content['type'] != 'contentGrid':
-	    name = ''
-	    if 'title' in content:
-	        name = content['title']
-	        if 'subtitle' in content:
-	            name = name + ' - ' + content['subtitle']
-	    else:
-	        name = content['subtitle']
-            videos.append( { 'name': name.strip(),
-                    'url': content['onClick']['URLMedias'].replace('{FORMAT}','hls'),
-                    'icon': content['URLImage']})
+        if content['type'] != 'landing' and content['type'] != 'contentGrid':
+            name = ''
+            if 'title' in content:
+                name = content['title']
+                if 'subtitle' in content:
+                    name = name + ' - ' + content['subtitle']
+            else:
+                name = content['subtitle']
+            videos.append( { 
+                'name': name.strip(),
+                'url' : content['onClick']['URLMedias'].replace('{FORMAT}','hls'),
+                'icon': content['URLImage']
+            } )
         #pprint.pprint(videos)
         return videos
 
@@ -144,10 +146,12 @@ class Media(object):
     def from_url(cls, url):
         content = get(url)
         output_json = json.loads(content)
-	informations = output_json['detail']['informations']
-	media_url = informations['videoURLs'][0]['videoURL']
-        media= { 'name': informations['title'].strip(), 
-		 'url': media_url,
-                 'icon': informations['URLImage']}
+        informations = output_json['detail']['informations']
+        media_url = informations['videoURLs'][0]['videoURL']
+        media = { 
+                'name': informations['title'].strip(), 
+                'url' : media_url,
+                'icon': informations['URLImage']
+        }
         #pprint.pprint(videos)
         return media
